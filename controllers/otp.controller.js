@@ -1,10 +1,10 @@
 const otpService = require("../services/otp.service");
 
 async function sendOtp(req, res) {
-  const { phone, otp } = req.body;
+  const { phone, text } = req.body;
   console.log("Request Body: ", req.body);
 
-  if (!phone || !otp) {
+  if (!phone || !text) {
     return res.status(400).json({
       errorCode: "01",
       errorDesc: "Bad request, phone number and otp are required",
@@ -12,8 +12,8 @@ async function sendOtp(req, res) {
   }
 
   try {
-    const result = await otpService.sendOtp(phone, otp);
-    console.log("OTP result: ", result);
+    const result = await otpService.sendOtp(phone, text);
+    console.log("text result: ", result);
 
     if (result.success) {
       res.json({

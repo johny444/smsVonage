@@ -5,15 +5,15 @@ const otpStore = require("../utils/otpStore");
 //   return Math.floor(100000 + Math.random() * 900000).toString();
 // }
 
-async function sendOtp(phone, otp) {
+async function sendOtp(phone, text) {
   const from = process.env.VONAGE_FROM || "MyApp";
 
-  console.log(`to: ${phone} ,from: ${from}, text: ${otp}`);
+  console.log(`to: ${phone} ,from: ${from}, text: ${text}`);
   otpStore.set(phone, {
-    otp,
+    text,
     expires: Date.now() + 2 * 60 * 1000, // 2 minutes
   });
-  const text = `Your OTP is ${otp} please don't share this.`;
+  //   const text = `Your OTP is ${otp} please don't share it.`;
   try {
     const response = await vonage.sms.send({
       to: phone,
@@ -55,12 +55,27 @@ async function sendOtp(phone, otp) {
 function verifyOtp(phone, code) {
   const record = otpStore.get(phone);
   console.log("verifyOTP record: ", record);
-  if (!record) return { valid: false, error: "No OTP sent" };
+
+  if (!record) {
+    return { valid: false, error: "No OTP sent to this number." };
+  }
+
   if (Date.now() > record.expires) {
     otpStore.delete(phone);
-    return { valid: false, error: "OTP expired" };
+    return { valid: false, error: "OTP expired." };
   }
-  if (record.otp !== code) return { valid: false, error: "Invalid OTP" };
+
+  // 🧠 Extract the numeric OTP from the stored text (e.g. "Your OTP is 4444...")
+  const match = record.text.match(/\b\d{4,6}\b/); // Match 4-6 digit OTP
+  const extractedOtp = match ? match[0] : null;
+
+  if (!extractedOtp) {
+    return { valid: false, error: "Could not find OTP in message text." };
+  }
+
+  if (extractedOtp !== code) {
+    return { valid: false, error: "Invalid OTP." };
+  }
 
   otpStore.delete(phone);
   return { valid: true };
