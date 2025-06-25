@@ -2,7 +2,7 @@ const otpService = require("../services/otp.service");
 
 async function sendOtp(req, res) {
   const { phone, otp } = req.body;
-  console.log("Request body: ", req.body);
+  console.log("Request Body: ", req.body);
 
   if (!phone || !otp) {
     return res.status(400).json({
