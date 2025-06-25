@@ -22,7 +22,7 @@ async function sendOtp(req, res) {
         messageId: result.messageId,
         // price: result.price,
         // remainingBalance: result.remainingBalance,
-        otp: result.text, // for dev
+        otp: result.text, //  dev
       });
     } else {
       res.status(400).json({

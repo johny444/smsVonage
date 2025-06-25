@@ -10,6 +10,7 @@ router.post("/webhooks/dlr", (req, res) => {
 
 router.get("/webhooks/dlr", (req, res) => {
   console.log("Delivery Receipt CHECK (GET):", req.query);
+  //store on DB
   res.status(200).send("Vonage DLR endpoint is active");
 });
 
