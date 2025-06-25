@@ -15,7 +15,12 @@ async function sendOtp(phone, otp) {
   });
   const text = `Your OTP is ${otp} please don't share this.`;
   try {
-    const response = await vonage.sms.send({ to: phone, from, text });
+    const response = await vonage.sms.send({
+      to: phone,
+      from,
+      text,
+      callback: process.env.SMS_CALLBACK_URL,
+    });
     const msg = response.messages[0];
 
     if (msg.status === "0") {
