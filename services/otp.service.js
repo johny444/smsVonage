@@ -14,6 +14,7 @@ async function sendOtp(phone, text) {
     expires: Date.now() + 2 * 60 * 1000, // 2 minutes
   });
   //   const text = `Your OTP is ${otp} please don't share it.`;
+  console.log("callback URL", process.env.SMS_CALLBACK_URL);
   try {
     const response = await vonage.sms.send({
       to: phone,
@@ -22,9 +23,11 @@ async function sendOtp(phone, text) {
       callback: process.env.SMS_CALLBACK_URL,
     });
     const msg = response.messages[0];
-
+    console.log("--------------------------------");
+    console.log("response from Vonage:", response);
+    console.log("--------------------------------");
     if (msg.status === "0") {
-      console.log("message data:", response);
+      // console.log("message data:", response);
       return {
         success: true,
         text,
@@ -32,6 +35,7 @@ async function sendOtp(phone, text) {
         // price: msg["message-price"],
         // remainingBalance: msg["remaining-balance"],
         status: msg.status,
+        response: response.messages[0],
       };
     } else {
       console.error("Vonage status error:", msg);
@@ -40,6 +44,7 @@ async function sendOtp(phone, text) {
         errorCode: "01",
         errorDesc: "Failed to send SMS",
         status: msg.status,
+        response: response.messages[0],
       };
     }
   } catch (err) {

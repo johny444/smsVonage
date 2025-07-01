@@ -1,5 +1,6 @@
 const otpService = require("../services/otp.service");
-
+const { callSmsLog } = require("../services/smsLog.service");
+const from = process.env.VONAGE_FROM || "MyApp";
 async function sendOtp(req, res) {
   const { phone, text } = req.body;
   console.log("Request Body: ", req.body);
@@ -14,15 +15,28 @@ async function sendOtp(req, res) {
   try {
     const result = await otpService.sendOtp(phone, text);
     console.log("text result: ", result);
-
+    if (result.messageId) {
+      await callSmsLog({
+        action: "SEND",
+        id: result.messageId,
+        errorCode: result.success ? "00" : "01",
+        errorDesc: result.success ? "Sent successfully" : "Send failed",
+        request: JSON.stringify(req.body),
+        response: JSON.stringify(result.response),
+        from,
+        to: phone,
+        content: text,
+        messageDate: new Date().toISOString(),
+      });
+    }
     if (result.success) {
       res.json({
-        errorCode: "00",
+        errorCode: result.status,
         errorDesc: "OTP sent",
         messageId: result.messageId,
         // price: result.price,
         // remainingBalance: result.remainingBalance,
-        otp: result.text, //  dev
+        content: result.text, //  dev
       });
     } else {
       res.status(400).json({
