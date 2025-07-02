@@ -5,10 +5,17 @@ const otpRoutes = require("../routes/otp.routes");
 const dlrRoutes = require("../routes/dlr.routes");
 const logger = require("morgan");
 const setupSwagger = require("../config/swagger");
-const getConnection = require("../config/DB"); // Adjust path if needed
+const { initPool } = require("../config/DB"); // Adjust path if needed
 const { callSmsLog } = require("../services/smsLog.service");
 
-getConnection();
+(async () => {
+  try {
+    await initPool(); // Initializes pool when app starts
+  } catch (err) {
+    console.error("❌ Failed to initialize DB pool:", err);
+    process.exit(1); // Exit app if DB pool can't be initialized
+  }
+})();
 
 const app = express();
 app.use(logger("dev"));

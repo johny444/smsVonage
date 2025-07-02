@@ -42,8 +42,9 @@ async function handleDLR(req, res) {
       content: null,
       messageDate: new Date().toISOString(),
     });
-
-    console.log(`✅ DLR (${req.method}) logged:`, messageId);
+    console.log("-----------------------------------");
+    console.log(`✅ DLR Callback (${req.method}) logged:`, messageId);
+    console.log("-----------------------------------");
     res.sendStatus(200);
   } catch (err) {
     console.error("❌ Failed to log DLR:", err.message);

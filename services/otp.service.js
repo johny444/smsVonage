@@ -1,6 +1,6 @@
 const vonage = require("../config/vonage");
 const otpStore = require("../utils/otpStore");
-
+const { getLocalIpAddress } = require("../services/getIP.service");
 // function generateOtp() {
 //   return Math.floor(100000 + Math.random() * 900000).toString();
 // }
@@ -15,6 +15,7 @@ async function sendOtp(phone, text) {
   });
   //   const text = `Your OTP is ${otp} please don't share it.`;
   console.log("callback URL", process.env.SMS_CALLBACK_URL);
+  // console.log("Local IP:", getLocalIpAddress());
   try {
     const response = await vonage.sms.send({
       to: phone,
@@ -52,7 +53,7 @@ async function sendOtp(phone, text) {
     return {
       //   success: false,
       errorCode: "01",
-      errorDesc: "SMS sending error",
+      errorDesc: `SMS sending error: ${err}`,
     };
   }
 }

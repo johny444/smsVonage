@@ -1,2 +1,4 @@
 http://localhost:3000/api-docs swagger
+
+want use callback must hosting server to public
 ngrok http 3000 .for ngrok and copy that url to .env SMS_CALLBACK_URL to make Vonage can callback(because must hosting for callback)

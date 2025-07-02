@@ -1,5 +1,5 @@
 const oracledb = require("oracledb");
-const getConnection = require("../config/DB"); // your connection helper
+const { getConnection } = require("../config/DB");
 
 async function callSmsLog({
   id,
