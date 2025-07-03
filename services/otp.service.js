@@ -1,9 +1,6 @@
 const vonage = require("../config/vonage");
 const otpStore = require("../utils/otpStore");
 const { getLocalIpAddress } = require("../services/getIP.service");
-// function generateOtp() {
-//   return Math.floor(100000 + Math.random() * 900000).toString();
-// }
 
 async function sendOtp(phone, text) {
   const from = process.env.VONAGE_FROM || "MyApp";
@@ -13,16 +10,15 @@ async function sendOtp(phone, text) {
     text,
     expires: Date.now() + 2 * 60 * 1000, // 2 minutes
   });
-  //   const text = `Your OTP is ${otp} please don't share it.`;
   console.log("callback URL", process.env.SMS_CALLBACK_URL);
   // console.log("Local IP:", getLocalIpAddress());
   try {
-    const response = await vonage.sms.send({
-      to: phone,
-      from,
-      text,
-      callback: process.env.SMS_CALLBACK_URL,
-    });
+    // const response = await vonage.sms.send({
+    //   to: phone,
+    //   from,
+    //   text,
+    //   callback: process.env.SMS_CALLBACK_URL,
+    // });
     const msg = response.messages[0];
     console.log("--------------------------------");
     console.log("response from Vonage:", response);

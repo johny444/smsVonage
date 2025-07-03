@@ -5,12 +5,35 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "OTP API",
+      title: "SMS EXTERNAL API",
       version: "1.0.0",
       description: "API to send and verify OTP using Vonage",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+        signatureHeader: {
+          type: "apiKey",
+          in: "header",
+          name: "x-signature",
+          description: "HMAC SHA256 signature of the request body",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+      {
+        signatureHeader: [],
+      },
+    ],
   },
-  apis: ["./routes/*.js"], // You can also use ["./**/*.js"]
+  apis: ["./routes/*.js"], // or ["./**/*.js"] depending on project structure
 };
 
 const swaggerSpec = swaggerJsDoc(options);
