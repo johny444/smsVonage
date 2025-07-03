@@ -3,15 +3,21 @@ const crypto = require("crypto");
 function verifySignature(req, res, next) {
   const secret = process.env.SIGNATURE_SECRET;
   const receivedSig = req.headers["x-signature"];
-  if (!receivedSig)
+  if (!receivedSig) {
     return res
       .status(401)
       .json({ errorCode: "01", error: "Signature missing" });
+  }
 
-  const raw = JSON.stringify(req.body);
+  // Combine all possible data: body (POST) or query/params (GET)
+  const dataToSign =
+    req.method === "GET"
+      ? JSON.stringify({ ...req.query, ...req.params })
+      : JSON.stringify(req.body);
+
   const calculated = crypto
     .createHmac("sha256", secret)
-    .update(raw)
+    .update(dataToSign)
     .digest("hex");
 
   if (calculated !== receivedSig) {

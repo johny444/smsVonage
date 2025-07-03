@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const otpRoutes = require("../routes/otp.routes");
 const dlrRoutes = require("../routes/dlr.routes");
 const authRoutes = require("../routes/auth.routes");
+const statusRoutes = require("../routes/status.routes");
+
 const logger = require("morgan");
 const setupSwagger = require("../config/swagger");
 const { initPool } = require("../config/DB"); // Adjust path if needed
@@ -25,6 +27,7 @@ app.use(bodyParser.json());
 app.use("/auth", authRoutes);
 app.use("/auth", testSignRoutes);
 app.use("/sms", otpRoutes);
+app.use("/sms", statusRoutes);
 app.use(dlrRoutes);
 setupSwagger(app);
 
